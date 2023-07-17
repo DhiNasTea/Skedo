@@ -1,14 +1,17 @@
 /*
 
+    We currently assume the range of valid work hours are from
+    8AM to 9PM, nothing can be done after 9PM
+
     An event from 8:00 to 10:00 will have
     start = 8
     end = 10
 
-    An event from 19:00 to 20:00 will have
+    An event from 19:00 to 21:00 will have
     start = 19
-    end = 20
+    end = 21
 
-    We cannot have an event from 20:00 to 21:00
+    We cannot have an event from 21:00 to 22:00
 
 */
 
@@ -67,13 +70,15 @@ const favorUnits = {
     17: 10,
     18: 8,
     19: 6,
-    20: 4
+    20: 4,
+    21: 2
 }
 
+// tested
 function sortTasks(listTasks)
 {
     if (listTasks.length <= 1) {
-        return array;
+        return listTasks;
       }
     
       var pivot = listTasks[0];
@@ -85,40 +90,45 @@ function sortTasks(listTasks)
         listTasks[i].duration < pivot.duration ? left.push(listTasks[i]) : right.push(listTasks[i]);
       }
     
-      return quicksort(left).concat(pivot, quicksort(right));
+      return sortTasks(left).concat(pivot, sortTasks(right));
 }
 
+// tested
 function isEventValid(event, schedule)
 {
+    if (event.start < 8 || event.end > 21 || event.start >= event.end ||
+        event.day < 0 || event.day > 6)
+    {
+        return false;
+    }
     for (var j = event.start; j < event.end; j++)
     {
         // if the time slot is busy (marked with 1), the event is not valid
-        if (schedule[event.day][j-8] = 1)
+        if (schedule[event.day][j-8] == 1)
         {
-            return False;
+            return false;
         }
     }
-    return True;
+    return true;
 }
 
+// tested
 function getEventValuation(event, schedule)
 {
     // calculate the value of placing the event at that spot
     // return 0 if the event is not valid
     value = 0;
-    curr_left_pointer = event.start;
-    curr_right_pointer = curr_left_pointer + 1;
+    curr_pointer = event.start;
 
     if (!isEventValid(event, schedule))
     {
         return 0;
     }
 
-    while (curr_left_pointer < event.end)
+    while (curr_pointer < event.end)
     {
-        value += (favorUnits[curr_left_pointer] + favorUnits[curr_right_pointer]) / 2;
-        curr_left_pointer += 1;
-        curr_right_pointer += 1;
+        value += (favorUnits[curr_pointer] + favorUnits[curr_pointer + 1]) / 2;
+        curr_pointer++;
     }
 
     return value;
@@ -261,7 +271,6 @@ function scheduleTasks(listTasks, filters)
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ];
 
     // block all days that are unavailble or hours that are unvailable with ones "1"
@@ -289,3 +298,145 @@ function scheduleTasks(listTasks, filters)
 
     return schedule;
 }
+
+/*
+
+    ===========================================================
+                        TESTING FUNCTIONS
+    ===========================================================
+
+*/
+
+function testSortTasks()
+{
+    var taskArray = [   new Task("smallest task", 3),
+                        new Task("biggest task", 9),
+                        new Task("middle task", 6),
+                        new Task("2nd smallest task", 4),
+                        new Task("2nd biggest task", 8)
+                    ];
+    var sortedArray = sortTasks(taskArray);
+    
+    console.log("\nSorting test:");
+    console.log("\tThe test was " + 
+    ((sortedArray[0].duration == 3 && sortedArray[4].duration) ? "succesful" : "unsuccesful"));
+}
+
+function testValidEvents()
+{
+    // Test the function that confirms if an Event is valid or not
+    var schedule1 = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // preamptively booking this so that nonValidEvent5 fails
+        [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // partially booking this so that nonValidEvent6 fails by overlap
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1]  // booking right before and after, should be validEvent4
+    ];
+    var nonValidEvent1 = new ScheduleEvent("this event starts to late", 21, 22, 0);
+    var nonValidEvent2 = new ScheduleEvent("this event starts after the end", 13, 9, 0);
+    var nonValidEvent3 = new ScheduleEvent("this event starts and ends at the same time", 9, 9, 0);
+    var nonValidEvent4 = new ScheduleEvent("this event starts at the day not in the week", 10, 12, 8);
+    var nonValidEvent5 = new ScheduleEvent("this event is in timeslot that's fully booked", 14, 16, 4);
+    var nonValidEvent6 = new ScheduleEvent("this event overlaps with a booked timeslot", 12, 13, 5);
+    var validEvent1 = new ScheduleEvent("this event is valid", 9, 14, 3);
+    var validEvent2 = new ScheduleEvent("this event is valid", 8, 9, 6);
+    var validEvent3 = new ScheduleEvent("this event is valid", 19, 20, 1);
+    var validEvent4 = new ScheduleEvent("this event is valid, just barely fits", 17, 19, 6);
+    var validEvent5 = new ScheduleEvent("this event is valid and tests the end limit", 19, 21, 2);
+
+
+    var eventResults = [
+                            [ isEventValid(nonValidEvent1, schedule1) == false, nonValidEvent1], 
+                            [ isEventValid(nonValidEvent2, schedule1) == false, nonValidEvent2], 
+                            [ isEventValid(nonValidEvent3, schedule1) == false, nonValidEvent3], 
+                            [ isEventValid(nonValidEvent4, schedule1) == false, nonValidEvent4], 
+                            [ isEventValid(nonValidEvent5, schedule1) == false, nonValidEvent5], 
+                            [ isEventValid(nonValidEvent6, schedule1) == false, nonValidEvent6], 
+                            [ isEventValid(validEvent1, schedule1) == true, validEvent1], 
+                            [ isEventValid(validEvent2, schedule1) == true, validEvent2], 
+                            [ isEventValid(validEvent3, schedule1) == true, validEvent3], 
+                            [ isEventValid(validEvent4, schedule1) == true, validEvent4], 
+                            [ isEventValid(validEvent5, schedule1) == true, validEvent5] 
+                        ]
+    
+    var validEventsTestSuccessful = eventResults[0][0] && eventResults[1][0] && eventResults[2][0] &&
+                                    eventResults[3][0] && eventResults[4][0] && eventResults[5][0] &&
+                                    eventResults[6][0] && eventResults[7][0] && eventResults[8][0] &&
+                                    eventResults[9][0] && eventResults[10][0];
+
+
+    console.log("\nValid events test:");
+    console.log("\tThe test was " + 
+    (validEventsTestSuccessful ? "succesful" : "unsuccesful"));
+    if (!validEventsTestSuccessful)
+    {
+        console.log("\n\tList of failing tests: ");
+        eventResults.forEach((eventRes, ind, arr) => {
+            if (!eventRes[0])
+            {
+                console.log("\t" + eventRes[1].name);
+            }
+        })
+    }
+}
+
+function testValueEvents()
+{
+    var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
+    var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
+    var event3 = new ScheduleEvent("value should be equal to 18", 18, 21, 4);
+    var event4 = new ScheduleEvent("value should be equal to 0, invalid", 7, 12, 2);
+    var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
+    var event6 = new ScheduleEvent("value should be equal to 50", 12, 18, 5);
+
+    var schedule2 = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  
+    ];
+
+    var valuationResults = [
+                            [getEventValuation(event1, schedule2) == 32, event1],
+                            [getEventValuation(event2, schedule2) == 22, event2],
+                            [getEventValuation(event3, schedule2) == 18, event3],
+                            [getEventValuation(event4, schedule2) == 0, event4],
+                            [getEventValuation(event5, schedule2) == 0, event5],
+                            [getEventValuation(event6, schedule2) == 50, event6],
+                            ];
+
+    var valueEventsTestSuccessful = valuationResults[0][0] && valuationResults[1][0] && valuationResults[2][0] &&
+                                    valuationResults[3][0] && valuationResults[4][0] && valuationResults[5][0];
+    
+
+    console.log("\nValue of events test:");
+    console.log("\tThe test was " + 
+    (valueEventsTestSuccessful ? "succesful" : "unsuccesful"));
+    if (!valueEventsTestSuccessful)
+    {
+        console.log("\n\tList of failing tests: ");
+        valuationResults.forEach((eventRes, ind, arr) => {
+            if (!eventRes[0])
+            {
+                console.log("\t" + eventRes[1].name 
+                + ", actual value is " + getEventValuation(eventRes[1], schedule2));
+            }
+        })
+    }
+}
+
+
+function testStuff()
+{
+    testSortTasks();
+    testValidEvents();
+    testValueEvents();
+    
+}
+
+testStuff();
