@@ -1,11 +1,11 @@
-import "./App.css";
+import Tabs from "./Tabs";
 
 function App() {
   return (
     <div className="App">
-      <div className="content">
-        <h1>Skedo</h1>
-      </div>
+      <h1>Skedo</h1>
+      <Tabs />
+      <div className="content"></div>
     </div>
   );
 }
