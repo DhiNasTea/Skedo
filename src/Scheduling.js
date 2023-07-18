@@ -167,6 +167,7 @@ function getHighestValue(task, schedule)
     return new ScheduleEvent(task.name, bestStart, bestStart + taskLength, bestDay);
 }
 
+// tested
 function applyFilters(schedule, filters)
 {
     // Valid values range like this:
@@ -177,85 +178,85 @@ function applyFilters(schedule, filters)
     {
         // making sure the day is Available, and the start/end are valid entries
         if (filters.monday.isAvailable &&
-            filters.monday.start > 7 && filters.monday.end < 21 && 
+            filters.monday.start > 7 && filters.monday.end <= 21 && 
             filters.monday.start < filters.monday.end)
         {
             // if we were free from 8 to 10, we would have
             // [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             // [8, 9,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ]
-            for (var j = filters.monday.start; j < filters.monday.end; i++)
+            for (var j = filters.monday.start; j < filters.monday.end; j++)
             {
                 newSchedule[0][j-8] = 0;
             }
         }
     }
-    if (this.tuesday)
+    if (filters.tuesday)
     {
         if (filters.tuesday.isAvailable &&
-            filters.tuesday.start > 7 && filters.tuesday.end < 21 && 
+            filters.tuesday.start > 7 && filters.tuesday.end <= 21 && 
             filters.tuesday.start < filters.tuesday.end)
         {
-            for (var j = filters.tuesday.start; j < filters.tuesday.end; i++)
+            for (var j = filters.tuesday.start; j < filters.tuesday.end; j++)
             {
                 newSchedule[1][j-8] = 0;
             }
         }
     }
-    if (this.wednesday)
+    if (filters.wednesday)
     {
         if (filters.wednesday.isAvailable &&
-            filters.wednesday.start > 7 && filters.wednesday.end < 21 && 
+            filters.wednesday.start > 7 && filters.wednesday.end <= 21 && 
             filters.wednesday.start < filters.wednesday.end)
         {
-            for (var j = filters.wednesday.start; j < filters.wednesday.end; i++)
+            for (var j = filters.wednesday.start; j < filters.wednesday.end; j++)
             {
                 newSchedule[2][j-8] = 0;
             }
         }
     }
-    if (this.thursday)
+    if (filters.thursday)
     {
         if (filters.thursday.isAvailable &&
-            filters.thursday.start > 7 && filters.thursday.end < 21 && 
+            filters.thursday.start > 7 && filters.thursday.end <= 21 && 
             filters.thursday.start < filters.thursday.end)
         {
-            for (var j = filters.thursday.start; j < filters.thursday.end; i++)
+            for (var j = filters.thursday.start; j < filters.thursday.end; j++)
             {
                 newSchedule[3][j-8] = 0;
             }
         }
     }
-    if (this.friday)
+    if (filters.friday)
     {
         if (filters.friday.isAvailable &&
-            filters.friday.start > 7 && filters.friday.end < 21 && 
+            filters.friday.start > 7 && filters.friday.end <= 21 && 
             filters.friday.start < filters.friday.end)
         {
-            for (var j = filters.friday.start; j < filters.friday.end; i++)
+            for (var j = filters.friday.start; j < filters.friday.end; j++)
             {
                 newSchedule[4][j-8] = 0;
             }
         }
     }
-    if (this.saturday)
+    if (filters.saturday)
     {
         if (filters.saturday.isAvailable &&
-            filters.saturday.start > 7 && filters.saturday.end < 21 && 
+            filters.saturday.start > 7 && filters.saturday.end <= 21 && 
             filters.saturday.start < filters.saturday.end)
         {
-            for (var j = filters.saturday.start; j < filters.saturday.end; i++)
+            for (var j = filters.saturday.start; j < filters.saturday.end; j++)
             {
                 newSchedule[5][j-8] = 0;
             }
         }
     }
-    if (this.sunday)
+    if (filters.sunday)
     {
         if (filters.saturday.isAvailable &&
-            filters.saturday.start > 7 && filters.saturday.end < 21 && 
+            filters.saturday.start > 7 && filters.saturday.end <= 21 && 
             filters.saturday.start < filters.saturday.end)
         {
-            for (var j = filters.saturday.start; j < filters.saturday.end; i++)
+            for (var j = filters.saturday.start; j < filters.saturday.end; j++)
             {
                 newSchedule[6][j-8] = 0;
             }
@@ -263,6 +264,24 @@ function applyFilters(schedule, filters)
     }
 
     return newSchedule;
+}
+
+function showSchedule(schedule)
+{
+    for (var x = 0; x < schedule.length; x++)
+    {
+        var currRow = "[";
+
+        for (var y = 0; y < schedule[x].length; y++)
+        {
+            (y != 0) ? 
+            currRow += ", " + schedule[x][y] :
+            currRow += schedule[x][y];
+        }
+        
+        currRow += "]";
+        console.log(currRow);
+    }
 }
 
 function scheduleTasks(listTasks, filters)
@@ -494,12 +513,75 @@ function testHighestValue()
     }
 }
 
+function testApplyFilters()
+{
+    var baseSchedule = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    var resSchedule = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    var fullday = new WeekDay(8, 21, true);
+    var midday = new WeekDay(10, 14, true);
+    var afternoon = new WeekDay(12, 17, true);
+    var morning = new WeekDay(8, 12, true);
+    var night = new WeekDay(18, 21, true);
+    var busy = new WeekDay(8, 21, false);
+
+    var Filter1 = new Filter(
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday
+        );
+
+    var Filter2 = new Filter(
+        afternoon,
+        fullday,
+        fullday,
+        fullday,
+        morning,
+        busy,
+        busy
+        );
+    
+    var resSchedule1 = applyFilters(resSchedule, Filter1);
+    resSchedule = baseSchedule;
+    var resSchedule2 = applyFilters(resSchedule, Filter2);
+
+
+    console.log("\nPrinting a schedule fully free");
+    showSchedule(resSchedule1);
+    console.log("\nPrinting a schedule with week-ends free, monday morning free and friday afternoon free");
+    showSchedule(resSchedule2);
+    
+
+}
+
 function testStuff()
 {
     testSortTasks();
     testValidEvents();
     testValueEvents();
     testHighestValue();
+    testApplyFilters();
     
 }
 
