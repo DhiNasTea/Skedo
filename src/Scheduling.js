@@ -134,6 +134,7 @@ function getEventValuation(event, schedule)
     return value;
 }
 
+// tested
 function getHighestValue(task, schedule)
 {
     // pointers used for schedule traversal
@@ -144,10 +145,10 @@ function getHighestValue(task, schedule)
 
     for (currDay = 0; currDay < 7; currDay++)
     {
-        for (currStart = 8; currStart < 20 - taskLength + 1; currStart++)
+        for (currStart = 8; currStart < 21 - taskLength + 1; currStart++)
         {
             // creating the tentative event
-            var currEvent = new ScheduleEvent(task.name, currStart, currStart + taskLength + currDay);
+            var currEvent = new ScheduleEvent(task.name, currStart, currStart + taskLength, currDay);
 
             // if we found a new timeslot that produces a better value, store that value
             currVal = getEventValuation(currEvent, schedule);
@@ -159,8 +160,11 @@ function getHighestValue(task, schedule)
             }
         }
     }
-
-    return { bestStart, bestEnd, day};
+    if (bestVal == 0)
+    {
+        return null;
+    }
+    return new ScheduleEvent(task.name, bestStart, bestStart + taskLength, bestDay);
 }
 
 function applyFilters(schedule, filters)
@@ -386,10 +390,10 @@ function testValueEvents()
 {
     var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
     var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
-    var event3 = new ScheduleEvent("value should be equal to 18", 18, 21, 4);
+    var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
     var event4 = new ScheduleEvent("value should be equal to 0, invalid", 7, 12, 2);
     var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
-    var event6 = new ScheduleEvent("value should be equal to 50", 12, 18, 5);
+    var event6 = new ScheduleEvent("value should be equal to 52", 12, 18, 5);
 
     var schedule2 = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -404,10 +408,10 @@ function testValueEvents()
     var valuationResults = [
                             [getEventValuation(event1, schedule2) == 32, event1],
                             [getEventValuation(event2, schedule2) == 22, event2],
-                            [getEventValuation(event3, schedule2) == 18, event3],
+                            [getEventValuation(event3, schedule2) == 15, event3],
                             [getEventValuation(event4, schedule2) == 0, event4],
                             [getEventValuation(event5, schedule2) == 0, event5],
-                            [getEventValuation(event6, schedule2) == 50, event6],
+                            [getEventValuation(event6, schedule2) == 52, event6],
                             ];
 
     var valueEventsTestSuccessful = valuationResults[0][0] && valuationResults[1][0] && valuationResults[2][0] &&
@@ -430,12 +434,72 @@ function testValueEvents()
     }
 }
 
+function testHighestValue()
+{
+    var schedule3 = [
+        [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1], // the best sport here is using 14 to 16 for 2 hours
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
+        [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1], // best spot for 4 hours 15 to 18
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1]  
+    ];
+    var schedule4 = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
+        [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1], // only this spot is free for two hours
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0]  
+    ];
+
+    var task1 = new Task("task of length 2", 2);
+    var task2 = new Task("task of length 4", 4);
+    var task3 = new Task("task of length 3", 3);
+
+
+    var result1 = getHighestValue(task1, schedule3);
+    var result2 = getHighestValue(task1, schedule4);
+    var result3 = getHighestValue(task2, schedule3);
+    var result4 = getHighestValue(task2, schedule4);
+    var result5 = getHighestValue(task3, schedule4);
+
+    var highestValueResults = [
+        [result1.day == 4 && result1.start == 9 && result1.end == 11, result1],             // Tuesday (2) as the best from 9 to 11
+        [result2.day == 5 && result2.start == 14 && result2.end == 16, result2],            // Saturday (5) as the best from 14 to 16
+        [result3.day == 5 && result3. start == 15 && result3.end == 19, result3],           // Saturday  (5) as the best from 15 to 18
+        [result4 == null, result4],                                                         // no spot available
+        [result5.day == 6 && result5.start == 18 && result5.end == 21, result5]             // should be Sunday from 18 to 21
+    ];
+    
+    var highestValueTestSuccessful =    highestValueResults[0][0] && highestValueResults[1][0] && highestValueResults[2][0] &&
+                                        highestValueResults[3][0];
+
+    console.log("\nHighest value for events test:");
+    console.log("\tThe test was " + 
+    (highestValueTestSuccessful ? "succesful" : "unsuccesful"));
+    if (!highestValueTestSuccessful)
+    {
+        console.log("\n\tList of failing tests: ");
+        highestValueResults.forEach((eventRes, ind, arr) => {
+            if (!eventRes[0])
+            {
+                console.log("\ttest nb. " + ind +
+                            ", start: " + eventRes[1].start + ", day: " + eventRes[1].day +
+                            ", actual value is " + "TBD");
+            }
+        })
+    }
+}
 
 function testStuff()
 {
     testSortTasks();
     testValidEvents();
     testValueEvents();
+    testHighestValue();
     
 }
 
