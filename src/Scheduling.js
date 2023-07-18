@@ -104,7 +104,7 @@ function isEventValid(event, schedule)
     for (var j = event.start; j < event.end; j++)
     {
         // if the time slot is busy (marked with 1), the event is not valid
-        if (schedule[event.day][j-8] == 1)
+        if (schedule[event.day][j-8] != 0)
         {
             return false;
         }
@@ -266,6 +266,7 @@ function applyFilters(schedule, filters)
     return newSchedule;
 }
 
+// tested
 function showSchedule(schedule)
 {
     for (var x = 0; x < schedule.length; x++)
@@ -284,6 +285,45 @@ function showSchedule(schedule)
     }
 }
 
+function eventToString(eventInstance)
+{
+    var buf = "";
+    buf += "The event " + eventInstance.name + " was planned to start at" + 
+                    ": " + eventInstance.start + " and end: " + eventInstance.end + 
+                    " on ";
+    if (eventInstance.day == 0)
+    {
+        buf += "Monday";
+    }
+    else if (eventInstance.day == 1)
+    {
+        buf += "Tuesday";
+    }
+    else if (eventInstance.day == 2)
+    {
+        buf += "Wednesday";
+    }
+    else if (eventInstance.day == 3)
+    {
+        buf += "Thursday";
+    }
+    else if (eventInstance.day == 4)
+    {
+        buf += "Friday";
+    }
+    else if (eventInstance.day == 5)
+    {
+        buf += "Saturday";
+    }
+    else
+    {
+        buf += "Sunday";
+    }
+
+    console.log(buf);
+}
+
+// tested (pass for now)
 function scheduleTasks(listTasks, filters)
 {
     var schedule = [
@@ -296,6 +336,8 @@ function scheduleTasks(listTasks, filters)
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
+    var listOfEvents = [];
+
     // block all days that are unavailble or hours that are unvailable with ones "1"
     schedule = applyFilters(schedule, filters)
 
@@ -307,19 +349,22 @@ function scheduleTasks(listTasks, filters)
         currentTask = orderedTasks.pop();
 
         // find best place to fit current task
-        let timeslot = getHighestValue(currentTask);
+        let eventTimeslot = getHighestValue(currentTask, schedule);
+
+        console.log(currentTask.name);
 
         // book schedule with that
-        for (let i = timeslot.start; i < timeslot.end; i++)
+        for (let i = eventTimeslot.start; i < eventTimeslot.end; i++)
         {
-            schedule[day][i] = 1;
+            schedule[eventTimeslot.day][i-8] = "B";
         }
-
+        listOfEvents.push(eventTimeslot);
+        
         // continue
 
     }
 
-    return schedule;
+    return {schedule, listOfEvents};
 }
 
 /*
@@ -572,7 +617,88 @@ function testApplyFilters()
     console.log("\nPrinting a schedule with week-ends free, monday morning free and friday afternoon free");
     showSchedule(resSchedule2);
     
+    console.log("");
 
+}
+
+function testScheduleTasks()
+{
+    var baseTasksArray = [   new Task("smallest task", 3),
+                        new Task("another small task", 4),
+                        new Task("biggest task", 9),
+                        new Task("middle task", 6),
+                        new Task("2nd smallest task", 4),
+                    ];
+    var taskArray = [   new Task("smallest task", 3),
+                        new Task("another small task", 4),
+                        new Task("biggest task", 9),
+                        new Task("middle task", 6),
+                        new Task("2nd smallest task", 4),
+                    ];
+    
+    var fullday = new WeekDay(8, 21, true);
+    var nineToFive = new WeekDay(9, 18, true);
+    var afternoon = new WeekDay(12, 17, true);
+    var morning = new WeekDay(8, 12, true);
+    var night = new WeekDay(18, 21, true);
+    var busy = new WeekDay(8, 21, false);
+
+    var Filter1 = new Filter(
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday,
+        fullday
+        );
+
+    var Filter2 = new Filter(
+        morning,
+        morning,
+        morning,
+        nineToFive,
+        nineToFive,
+        busy,
+        busy
+        );
+    
+    var Filter3 = new Filter(
+        nineToFive,
+        nineToFive,
+        nineToFive,
+        fullday,
+        fullday,
+        busy,
+        busy
+        );
+    
+    var result1 = scheduleTasks(taskArray, Filter1);
+    taskArray = baseTasksArray;
+    var result2 = scheduleTasks(taskArray, Filter2);
+    taskArray = baseTasksArray;
+    var result3 = scheduleTasks(taskArray, Filter3);
+    
+
+    console.log("\nPrinting the schedule with fully free time slots:");
+    showSchedule(result1.schedule);
+    result1.listOfEvents.forEach((eventRes, ind, arr) => {
+        eventToString(eventRes);
+    })
+
+    console.log("\nPrinting the schedule with mornings monday " + 
+                "to wednesday and day 9 to 5 thursday and friday:");
+    showSchedule(result2.schedule);
+    result2.listOfEvents.forEach((eventRes, ind, arr) => {
+        eventToString(eventRes);
+    })
+
+    console.log("\nPrinting the schedule with working day 9 to 5 " + 
+                " monday to wednesday and fulldays thursday and friday");
+    showSchedule(result3.schedule);
+    result3.listOfEvents.forEach((eventRes, ind, arr) => {
+        eventToString(eventRes);
+    })
 }
 
 function testStuff()
@@ -582,6 +708,7 @@ function testStuff()
     testValueEvents();
     testHighestValue();
     testApplyFilters();
+    testScheduleTasks();
     
 }
 
