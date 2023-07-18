@@ -11,32 +11,44 @@ const Tabs = () => {
   };
   return (
     <div className="container">
-      <ul className="nav nav-tabs">
-        <li
-          className={activeTab === "tasks" ? "active" : ""}
+      <nav className="nav nav-tabs">
+        <a
+          className={
+            activeTab === "tasks"
+              ? "active nav-item nav-link"
+              : "nav-item nav-link"
+          }
           onClick={() => handleTabClick("tasks")}
+          href="#tasks"
+          data-toggle="tab"
         >
-          <a data-toggle="tab" href="#tasks">
-            Tasks
-          </a>
-        </li>
-        <li
-          className={activeTab === "options" ? "active" : ""}
+          Tasks
+        </a>
+        <a
+          className={
+            activeTab === "options"
+              ? "active nav-item nav-link"
+              : "nav-item nav-link"
+          }
           onClick={() => handleTabClick("options")}
+          data-toggle="tab"
+          href="#options"
         >
-          <a data-toggle="tab" href="#options">
-            Options
-          </a>
-        </li>
-        <li
-          className={activeTab === "schedules" ? "active" : ""}
+          Options
+        </a>
+        <a
+          className={
+            activeTab === "schedules"
+              ? "active nav-item nav-link"
+              : "nav-item nav-link"
+          }
           onClick={() => handleTabClick("schedules")}
+          data-toggle="tab"
+          href="#schedules"
         >
-          <a data-toggle="tab" href="#schedules">
-            Schedules
-          </a>
-        </li>
-      </ul>
+          Schedules
+        </a>
+      </nav>
       <div className="tab-content">
         {activeTab === "tasks" && <Tasks />}
         {activeTab === "options" && <Options />}
