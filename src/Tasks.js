@@ -19,10 +19,16 @@ const TasksTab = () => {
         name: newTask,
         duration: newDuration,
       };
+
       setTasks([...tasks, task]);
       setNewTask("");
       setNewDuration("");
     }
+  };
+
+  const handleNext = () => {
+    // Add logic for handling the "Next" button right here
+    console.log("Next button clicked");
   };
 
   return (
@@ -31,25 +37,32 @@ const TasksTab = () => {
       <div>
         <input
           type="text"
+          placeholder="Task name"
           value={newTask}
           onChange={handleTaskChange}
-          placeholder="Task name"
         />
-        <input
-          type="text"
-          value={newDuration}
-          onChange={handleDurationChange}
-          placeholder="Duration"
-        />
+        <select value={newDuration} onChange={handleDurationChange}>
+          <option value="">Select duration</option>
+          <option value="1">1 hour</option>
+          <option value="2">2 hours</option>
+          <option value="3">3 hours</option>
+          <option value="4">4 hours</option>
+          <option value="5">5 hours</option>
+          {/* Add more duration options as needed */}
+        </select>
         <button onClick={handleAddTask}>Add Task</button>
       </div>
-      <ul>
+      <div>
         {tasks.map((task, index) => (
-          <li key={index}>
-            {task.name} - {task.duration}
-          </li>
+          <div key={index}>
+            <span>{task.name}</span> -{" "}
+            <span>
+              {task.duration} {task.duration === "1" ? "hour" : "hours"}
+            </span>
+          </div>
         ))}
-      </ul>
+      </div>
+      <button onClick={handleNext}>Next</button>
     </div>
   );
 };
