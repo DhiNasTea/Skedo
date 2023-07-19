@@ -15,7 +15,7 @@
 
 */
 
-class WeekDay {
+export class WeekDay {
   constructor(start, end, isAvailable) {
     this.start = start;
     this.end = end;
@@ -23,7 +23,7 @@ class WeekDay {
   }
 }
 
-class Filter {
+export class Filter {
   constructor(monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
     this.monday = monday;
     this.tuesday = tuesday;
@@ -35,7 +35,7 @@ class Filter {
   }
 }
 
-class Task {
+export class Task {
   constructor(name, durationInUnits) {
     this.name = name;
     this.duration = durationInUnits;
@@ -313,7 +313,7 @@ function eventToString(eventInstance) {
 }
 
 // tested (pass for now)
-function scheduleTasks(listTasks, filters) {
+export function scheduleTasks(listTasks, filters) {
   var schedule = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],

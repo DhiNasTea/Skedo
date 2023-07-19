@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Task, WeekDay, Filter, scheduleTasks } from "./Scheduling";
+import {WeekDay, Filter, Task, scheduleTasks} from "./Scheduling";
+import {updateSchedules} from "./Schedules";
+
 const generateTimeOptions = () => {
   const options = [];
-  for (let hour = 8; hour <= 21; hour++) {
+  for (let hour = 8; hour < 21; hour++) {
     options.push(`${hour.toString().padStart(2, "0")}:00`);
   }
   return options;
