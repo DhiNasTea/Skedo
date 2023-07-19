@@ -9,7 +9,7 @@ const generateTimeOptions = () => {
   return options;
 };
 
-const Options = () => {
+const Options = ({ tasksArray, onHandleNextClick }) => {
   const [schedule, setSchedule] = useState({
     Monday: { checked: false, startTime: "", endTime: "" },
     Tuesday: { checked: false, startTime: "", endTime: "" },
@@ -63,7 +63,10 @@ const Options = () => {
     //Add your submission logic here, e.g., send data to the server, etc.
     let filterObject = createFilterObject(schedule);
     console.log(filterObject);
-    runner(filterObject);
+
+    let schedAndEventsList = generateSchedule(tasksArray, filterObject);
+    // Call the callback function to pass the schedAndEventsList to the Tabs component
+    onHandleNextClick(schedAndEventsList);
   };
 
   const timeOptions = generateTimeOptions();
@@ -203,6 +206,16 @@ function runner(filter) {
   console.log(test.schedule);
   // updateSchedules(test.listOfEvents);
 }
+function generateSchedule(tasks, filter) {
+  console.log("before generating schedules");
+  console.log(tasks);
+  console.log(filter);
+  const schedAndEventsList = scheduleTasks(tasks, filter);
+  console.log(schedAndEventsList.listOfEvents);
+  console.log(schedAndEventsList.schedule);
+  return schedAndEventsList;
+}
+
 //const filterObject = createFilterObject(options);
 
 //console.log(filterObject);

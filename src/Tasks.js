@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { Task } from "./Scheduling";
 
-const TasksTab = () => {
+const TasksTab = ({ onHandleNextClick }) => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [newDuration, setNewDuration] = useState("");
@@ -27,7 +28,13 @@ const TasksTab = () => {
   };
 
   const handleNext = () => {
+    const taskObjects = tasks.map(
+      (task) => new Task(task.name, parseInt(task.duration))
+    );
+    console.log("Array of Task objects:", taskObjects);
     // Add logic for handling the "Next" button right here
+    // Call the callback function to pass the array of Task objects to the Tabs component
+    onHandleNextClick(taskObjects);
     console.log("Next button clicked");
   };
 

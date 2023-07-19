@@ -124,9 +124,20 @@ function getItemColor(itemId) {
   return hexColor;
 }
 
-function Schedules() {
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+function Schedules({ schedAndEventsList }) {
   const daysNum = Array.from({ length: 7 }, (_, i) => i);
+  //change the following two lines Dhiaa
+  console.log("This is what is received by schedules tab");
+  console.log(schedAndEventsList);
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
   const hours = Array.from({ length: 13 }, (_, i) => i);
 
   // temporarely creating the event list here
@@ -159,7 +170,7 @@ function Schedules() {
         <div className="hours">
           {hours.map((hour) => (
             <div key={hour} className="hour">
-              {hour+8}:00
+              {hour + 8}:00
             </div>
           ))}
         </div>
@@ -177,11 +188,8 @@ function Schedules() {
           </div>
         </div>
       </div>
-
     </div>
-
-
   );
-};
+}
 
 export default Schedules;

@@ -328,8 +328,8 @@ export function scheduleTasks(listTasks, filters) {
 
   // block all days that are unavailble or hours that are unvailable with ones "1"
   schedule = applyFilters(schedule, filters);
-  console.log("This is schedule in the schedule Tasks code:");
-  console.log(schedule);
+  // console.log("This is schedule in the schedule Tasks code:");
+  // console.log(schedule);
 
   var orderedTasks = sortTasks(listTasks);
 
@@ -767,4 +767,4 @@ function testStuff() {
   testScheduleTasks();
 }
 
-testStuff();
+// testStuff();
