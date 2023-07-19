@@ -42,7 +42,7 @@ export class Task {
   }
 }
 
-class ScheduleEvent {
+export class ScheduleEvent {
   constructor(name, start, end, day) {
     this.name = name;
     this.start = start;
@@ -490,12 +490,7 @@ function testValueEvents() {
   var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
   var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
   var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
-  var event4 = new ScheduleEvent(
-    "value should be equal to 0, invalid",
-    7,
-    12,
-    2
-  );
+  var event4 = new ScheduleEvent("value should be equal to 0, invalid",7,12,2);
   var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
   var event6 = new ScheduleEvent("value should be equal to 52", 12, 18, 5);
 

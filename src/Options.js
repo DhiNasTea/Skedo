@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import {WeekDay, Filter, Task, scheduleTasks} from "./Scheduling";
-import {updateSchedules} from "./Schedules";
+import { WeekDay, Filter, Task, scheduleTasks } from "./Scheduling";
 
 const generateTimeOptions = () => {
   const options = [];
@@ -192,6 +191,7 @@ function runner(filter) {
   const test = scheduleTasks(taskArray, filter);
   console.log(test.listOfEvents);
   console.log(test.schedule);
+  // updateSchedules(test.listOfEvents);
 }
 //const filterObject = createFilterObject(options);
 
