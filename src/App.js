@@ -10,6 +10,7 @@ function App() {
           </a>
         </div>
       </nav>
+      <div className="Toastify"></div>
       <div className="body-container mt-5">
         <h1 className="h2 pt-2 pb-3 heading">Personal Scheduler</h1>
 

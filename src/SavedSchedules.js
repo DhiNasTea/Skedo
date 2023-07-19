@@ -23,13 +23,12 @@ const ScheduleComponent = () => {
         .select("schedules");
 
       // Assuming the response data contains an array of schedules
+      console.log(schedules_all);
       setSchedules(schedules_all);
     } catch (error) {
       console.error("Error fetching schedules:", error);
     }
   };
-  //console.log("This is fetched schedules");
-  //console.log(schedules);
 
   return (
     <div>
@@ -69,6 +68,7 @@ const ScheduleComponent = () => {
           Fetch Schedules
         </button>
       </div>
+
       {/* Render the fetched schedules here */}
       {/* <ul>
         {schedules.map((schedule) => (
