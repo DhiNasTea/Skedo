@@ -26,17 +26,21 @@ code {
 }
 
 .bg-green {
-  background: #141e30; /* fallback for old browsers */
+  background: #83a4d4; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to right,
-    #243b55,
-    #141e30
+    #b6fbff,
+    #83a4d4
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to right,
-    #243b55,
-    #141e30
+    #b6fbff,
+    #83a4d4
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.heading {
+  padding-top: 1rem;
 }
 
 .content {
@@ -46,7 +50,7 @@ code {
 }
 
 .site-title {
-  color: azure;
+  color: black;
 }
 
 .form-row {
@@ -64,6 +68,19 @@ code {
   color: #495057;
   vertical-align: middle;
   background: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  appearance: none;
+}
+
+.fetch-sched-button {
+  display: inline-block;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.375rem 0.375rem 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  vertical-align: middle;
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
   appearance: none;

@@ -328,6 +328,8 @@ export function scheduleTasks(listTasks, filters) {
 
   // block all days that are unavailble or hours that are unvailable with ones "1"
   schedule = applyFilters(schedule, filters);
+  console.log("This is schedule in the schedule Tasks code:");
+  console.log(schedule);
 
   var orderedTasks = sortTasks(listTasks);
 
@@ -735,6 +737,9 @@ function testScheduleTasks() {
 
   console.log("\nPrinting the schedule with fully free time slots:");
   showSchedule(result1.schedule);
+  console.log(result1.listOfEvents);
+  const jsonSchedule = JSON.stringify(result1.listOfEvents);
+  console.log(jsonSchedule);
   result1.listOfEvents.forEach((eventRes, ind, arr) => {
     eventToString(eventRes);
   });
