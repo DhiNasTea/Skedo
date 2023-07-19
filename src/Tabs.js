@@ -6,9 +6,23 @@ import Tasks from "./Tasks";
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState("tasks");
+  const [tasks, setTasks] = useState([]);
+  const [schedAndEventsList, setSchedAndEventsList] = useState(null);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  // Handles clicking next in the Tasks tab
+  const handleNextClick = (tasksArray) => {
+    setTasks(tasksArray);
+    setActiveTab("options");
+  };
+
+  // Handles clicking Go to Schedules in the Options tab
+  const handleGenerateSchedules = (schedList) => {
+    setSchedAndEventsList(schedList);
+    setActiveTab("schedules");
   };
   return (
     <div className="container">
@@ -63,9 +77,16 @@ const Tabs = () => {
         </a>
       </nav>
       <div className="tab-content">
-        {activeTab === "tasks" && <Tasks />}
-        {activeTab === "options" && <Options />}
-        {activeTab === "schedules" && <Schedules />}
+        {activeTab === "tasks" && <Tasks onHandleNextClick={handleNextClick} />}
+        {activeTab === "options" && (
+          <Options
+            tasksArray={tasks}
+            onHandleNextClick={handleGenerateSchedules}
+          />
+        )}
+        {activeTab === "schedules" && (
+          <Schedules schedAndEventsList={schedAndEventsList} />
+        )}
         {activeTab === "saved_schedules" && <SavedSchedules />}
       </div>
     </div>
