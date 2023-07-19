@@ -11,7 +11,7 @@ function App() {
         </div>
       </nav>
       <div className="body-container mt-5">
-        <h3 className="h3 pt-2 pb-3">Personal Scheduler</h3>
+        <h1 className="h2 pt-2 pb-3 heading">Personal Scheduler</h1>
 
         <Tabs />
       </div>

@@ -15,7 +15,7 @@
 
 */
 
-class WeekDay {
+export class WeekDay {
   constructor(start, end, isAvailable) {
     this.start = start;
     this.end = end;
@@ -23,7 +23,7 @@ class WeekDay {
   }
 }
 
-class Filter {
+export class Filter {
   constructor(monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
     this.monday = monday;
     this.tuesday = tuesday;
@@ -35,7 +35,7 @@ class Filter {
   }
 }
 
-class Task {
+export class Task {
   constructor(name, durationInUnits) {
     this.name = name;
     this.duration = durationInUnits;
@@ -313,8 +313,10 @@ function eventToString(eventInstance) {
 }
 
 // tested (pass for now)
-function scheduleTasks(listTasks, filters) {
-  var schedule = [
+export function scheduleTasks(listTasks, filters) {
+  console.log("this is filters in the fcn");
+  console.log(filters);
+  let schedule = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -328,6 +330,8 @@ function scheduleTasks(listTasks, filters) {
 
   // block all days that are unavailble or hours that are unvailable with ones "1"
   schedule = applyFilters(schedule, filters);
+  console.log("This is schedule in the schedule Tasks code:");
+  console.log(schedule);
 
   var orderedTasks = sortTasks(listTasks);
 
@@ -735,6 +739,9 @@ function testScheduleTasks() {
 
   console.log("\nPrinting the schedule with fully free time slots:");
   showSchedule(result1.schedule);
+  console.log(result1.listOfEvents);
+  const jsonSchedule = JSON.stringify(result1.listOfEvents);
+  console.log(jsonSchedule);
   result1.listOfEvents.forEach((eventRes, ind, arr) => {
     eventToString(eventRes);
   });
