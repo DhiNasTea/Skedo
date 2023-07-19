@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-
+import { WeekDay, Filter } from "./Scheduling";
 const generateTimeOptions = () => {
   const options = [];
-  for (let hour = 8; hour <= 22; hour++) {
+  for (let hour = 8; hour <= 21; hour++) {
     options.push(`${hour.toString().padStart(2, "0")}:00`);
   }
   return options;
@@ -52,7 +52,8 @@ const Options = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Submitted Schedule:", schedule);
-    // Add your submission logic here, e.g., send data to the server, etc.
+    //Add your submission logic here, e.g., send data to the server, etc.
+    console.log(createFilterObject(schedule));
   };
 
   const timeOptions = generateTimeOptions();
@@ -125,5 +126,24 @@ const Options = () => {
     </form>
   );
 };
+
+//uncomment after the implementation for Schedule.js is merged
+
+const createFilterObject = (options) => {
+  const days = Object.keys(options);
+  const filter = new Filter();
+
+  days.forEach((day) => {
+    const { checked, startTime, endTime } = options[day];
+    const weekDay = new WeekDay(startTime, endTime, checked);
+    filter[day.toLowerCase()] = weekDay;
+  });
+
+  return filter;
+};
+
+//const filterObject = createFilterObject(options);
+
+//console.log(filterObject);
 
 export default Options;
