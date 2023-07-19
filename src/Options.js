@@ -20,6 +20,12 @@ const Options = () => {
     Sunday: { checked: false, startTime: "", endTime: "" },
   });
 
+  const anyCheckboxSelected = () => {
+    return Object.values(schedule).some(
+      (day) => day.checked && day.startTime && day.endTime
+    );
+  };
+
   const handleCheckboxChange = (day) => (event) => {
     setSchedule({
       ...schedule,
@@ -124,7 +130,11 @@ const Options = () => {
           </div>
         )
       )}
-      <button type="submit" className="btn btn-primary">
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={!anyCheckboxSelected()}
+      >
         Go to Schedules
       </button>
     </form>
