@@ -60,24 +60,42 @@ function createEventGrid(listOfEvents)
     let end = scheduleEvent.end;
     let day = scheduleEvent.day;
     let name = scheduleEvent.name;
+    let firstTimeSlot = true;
 
     for (let i = start; i < end; i++)
     {
-      grid[day][i-8] = eventIDcount; 
+      if (firstTimeSlot)
+      {
+        grid[day][i-8] = 2 * eventIDcount;
+        firstTimeSlot = false;
+      }
+      else 
+      {
+        grid[day][i-8] = 2 * eventIDcount + 1;
+      }
+       
     }
 
     eventIDcount++;
   }
-
+  console.log(grid);
   return grid;
 }
 
 function isTimeSlotEvent(day, hour, grid)
 {
   // will return a color
-  if (grid[day][hour-8] != 0)
+  let currID = grid[day][hour-8];
+  if (currID != 0)
   {
-    return getItemColor(grid[day][hour-8]);
+    if (currID % 2 == 0) // this is the first timeslot
+    {
+      return getItemColor(grid[day][hour-8] / 2);
+    }
+    else
+    {
+      return getItemColor((grid[day][hour-8] - 1) / 2);
+    }
   }
   else 
   {
@@ -124,6 +142,28 @@ function getItemColor(itemId) {
   return hexColor;
 }
 
+function firstTimeSlotName(day, hour, grid, listOfEvents)
+{
+  let currID = grid[day][hour-8];
+  if (currID != 0)
+  {
+    console.log("in the first event thing");
+    console.log(listOfEvents);
+    console.log("in the first event thing, end");
+    if (currID % 2 == 0) // this is the first timeslot
+    {
+      console.log(currID / 2);
+      return listOfEvents[((currID) / 2) - 1].name;
+    }
+    else
+    {
+      return " ";
+    }
+  }
+  
+  return "-";
+}
+
 function Schedules({ schedAndEventsList }) {
   const daysNum = Array.from({ length: 7 }, (_, i) => i);
   //change the following two lines Dhiaa
@@ -141,15 +181,15 @@ function Schedules({ schedAndEventsList }) {
   const hours = Array.from({ length: 13 }, (_, i) => i);
 
   // temporarely creating the event list here
-  var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
-  var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
-  var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
-  var event4 = new ScheduleEvent("value should be equal to 0, invalid",7,12,2);
-  var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
+  // var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
+  // var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
+  // var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
+  // var event4 = new ScheduleEvent("value should be equal to 0, invalid",7,12,2);
+  // var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
 
-  var eventList = [event1, event2, event3, event4, event5];
+  // var eventList = [event1, event2, event3, event4, event5];
 
-  let colorGrid = createEventGrid(eventList);
+  let colorGrid = createEventGrid(schedAndEventsList.listOfEvents);
   console.log(colorGrid);
 
   // testUpdateSchedules();
@@ -180,7 +220,7 @@ function Schedules({ schedAndEventsList }) {
               <div key={day} className="day-schedule">
                 {hours.map((hour) => (
                   <div id={`${day}-${hour+8}`} key={`${day}-${hour+8}`} className="hour-slot" style={{backgroundColor: isTimeSlotEvent(day, hour+8, colorGrid)}}>
-                    {"-"}
+                    {firstTimeSlotName(day, hour+8, colorGrid, schedAndEventsList.listOfEvents)}
                   </div>
                 ))}
               </div>

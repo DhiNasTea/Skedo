@@ -254,12 +254,12 @@ function applyFilters(schedule, filters) {
   }
   if (filters.sunday) {
     if (
-      filters.saturday.isAvailable &&
-      filters.saturday.start > 7 &&
-      filters.saturday.end <= 21 &&
-      filters.saturday.start < filters.saturday.end
+      filters.sunday.isAvailable &&
+      filters.sunday.start > 7 &&
+      filters.sunday.end <= 21 &&
+      filters.sunday.start < filters.sunday.end
     ) {
-      for (var j = filters.saturday.start; j < filters.saturday.end; j++) {
+      for (var j = filters.sunday.start; j < filters.sunday.end; j++) {
         newSchedule[6][j - 8] = 0;
       }
     }
