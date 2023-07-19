@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { WeekDay, Filter } from "./Scheduling";
+import { Task, WeekDay, Filter, scheduleTasks } from "./Scheduling";
 const generateTimeOptions = () => {
   const options = [];
   for (let hour = 8; hour <= 21; hour++) {
@@ -53,7 +53,7 @@ const Options = () => {
     event.preventDefault();
     console.log("Submitted Schedule:", schedule);
     //Add your submission logic here, e.g., send data to the server, etc.
-    console.log(createFilterObject(schedule));
+    runner(createFilterObject(schedule));
   };
 
   const timeOptions = generateTimeOptions();
@@ -131,17 +131,68 @@ const Options = () => {
 
 const createFilterObject = (options) => {
   const days = Object.keys(options);
-  const filter = new Filter();
-
   days.forEach((day) => {
-    const { checked, startTime, endTime } = options[day];
-    const weekDay = new WeekDay(startTime, endTime, checked);
-    filter[day.toLowerCase()] = weekDay;
+    options[day].startTime = parseInt(options[day].startTime.split(":")[0], 10);
+    options[day].endTime = parseInt(options[day].endTime.split(":")[0], 10);
   });
 
-  return filter;
+  var monday = new WeekDay(
+    options.Monday.startTime,
+    options.Monday.endTime,
+    options.Monday.checked
+  );
+  var tuesday = new WeekDay(
+    options.Tuesday.startTime,
+    options.Tuesday.endTime,
+    options.Tuesday.checked
+  );
+  var wednesday = new WeekDay(
+    options.Wednesday.startTime,
+    options.Wednesday.endTime,
+    options.Wednesday.checked
+  );
+  var thursday = new WeekDay(
+    options.Thursday.startTime,
+    options.Thursday.endTime,
+    options.Thursday.checked
+  );
+  var friday = new WeekDay(
+    options.Friday.startTime,
+    options.Friday.endTime,
+    options.Friday.checked
+  );
+  var saturday = new WeekDay(
+    options.Saturday.startTime,
+    options.Saturday.endTime,
+    options.Saturday.checked
+  );
+  var sunday = new WeekDay(
+    options.Sunday.startTime,
+    options.Sunday.endTime,
+    options.Sunday.checked
+  );
+
+  var preferences = new Filter(
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+    sunday
+  );
+
+  return preferences;
 };
 
+function runner(filter) {
+  console.log(filter);
+  var taskArray = [new Task("smallest task", 3)];
+
+  const test = scheduleTasks(taskArray, filter);
+  console.log(test.listOfEvents);
+  console.log(test.schedule);
+}
 //const filterObject = createFilterObject(options);
 
 //console.log(filterObject);
