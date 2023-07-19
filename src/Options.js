@@ -51,9 +51,12 @@ const Options = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Submitted Schedule:", schedule);
+    console.log("This is waht user submitted Schedule:");
+    console.log(schedule);
     //Add your submission logic here, e.g., send data to the server, etc.
-    runner(createFilterObject(schedule));
+    let filterObject = createFilterObject(schedule);
+    console.log(filterObject);
+    runner(filterObject);
   };
 
   const timeOptions = generateTimeOptions();
@@ -131,44 +134,40 @@ const Options = () => {
 
 const createFilterObject = (options) => {
   const days = Object.keys(options);
-  days.forEach((day) => {
-    options[day].startTime = parseInt(options[day].startTime.split(":")[0], 10);
-    options[day].endTime = parseInt(options[day].endTime.split(":")[0], 10);
-  });
 
   var monday = new WeekDay(
-    options.Monday.startTime,
-    options.Monday.endTime,
+    parseInt(options.Monday.startTime.split(":")[0], 10),
+    parseInt(options.Monday.endTime.split(":")[0], 10),
     options.Monday.checked
   );
   var tuesday = new WeekDay(
-    options.Tuesday.startTime,
-    options.Tuesday.endTime,
+    parseInt(options.Tuesday.startTime.split(":")[0], 10),
+    parseInt(options.Tuesday.endTime.split(":")[0], 10),
     options.Tuesday.checked
   );
   var wednesday = new WeekDay(
-    options.Wednesday.startTime,
-    options.Wednesday.endTime,
+    parseInt(options.Wednesday.startTime.split(":")[0], 10),
+    parseInt(options.Wednesday.endTime.split(":")[0], 10),
     options.Wednesday.checked
   );
   var thursday = new WeekDay(
-    options.Thursday.startTime,
-    options.Thursday.endTime,
+    parseInt(options.Thursday.startTime.split(":")[0], 10),
+    parseInt(options.Thursday.endTime.split(":")[0], 10),
     options.Thursday.checked
   );
   var friday = new WeekDay(
-    options.Friday.startTime,
-    options.Friday.endTime,
+    parseInt(options.Friday.startTime.split(":")[0], 10),
+    parseInt(options.Friday.endTime.split(":")[0], 10),
     options.Friday.checked
   );
   var saturday = new WeekDay(
-    options.Saturday.startTime,
-    options.Saturday.endTime,
+    parseInt(options.Saturday.startTime.split(":")[0], 10),
+    parseInt(options.Saturday.endTime.split(":")[0], 10),
     options.Saturday.checked
   );
   var sunday = new WeekDay(
-    options.Sunday.startTime,
-    options.Sunday.endTime,
+    parseInt(options.Sunday.startTime.split(":")[0], 10),
+    parseInt(options.Sunday.endTime.split(":")[0], 10),
     options.Sunday.checked
   );
 
@@ -186,7 +185,6 @@ const createFilterObject = (options) => {
 };
 
 function runner(filter) {
-  console.log(filter);
   var taskArray = [new Task("smallest task", 3)];
 
   const test = scheduleTasks(taskArray, filter);
