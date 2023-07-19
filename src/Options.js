@@ -20,7 +20,9 @@ const Options = () => {
   });
 
   const anyCheckboxSelected = () => {
-    return Object.values(schedule).some((day) => day.checked);
+    return Object.values(schedule).some(
+      (day) => day.checked && day.startTime && day.endTime
+    );
   };
 
   const handleCheckboxChange = (day) => (event) => {
