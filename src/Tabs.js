@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Options from "./Options";
 import Schedules from "./Schedules";
 import SavedSchedules from "./SavedSchedules";
@@ -61,7 +61,9 @@ const Tabs = () => {
           className={
             activeTab === "options"
               ? "active nav-item nav-link"
-              : "nav-item nav-link"
+              : tasks.length > 0
+              ? "nav-item nav-link"
+              : "nav-item nav-link disabled" // Disable the tab visually if tasks are not set
           }
           onClick={() => handleTabClick("options")}
           data-toggle="tab"
@@ -75,7 +77,7 @@ const Tabs = () => {
               ? "active nav-item nav-link"
               : schedAndEventsList
               ? "nav-item nav-link"
-              : "nav-item nav-link disabled" // Add 'disabled' class to disable the tab visually
+              : "nav-item nav-link disabled" // Disable the tab visually if schedAndEventsList is not set
           }
           onClick={() => handleTabClick("schedules")}
           data-toggle="tab"
