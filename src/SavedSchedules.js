@@ -7,13 +7,51 @@ import {
   isTimeSlotEvent,
 } from "./Schedules";
 
+const fetchUserData = async (name, password) => {
+  try {
+    let { data: userData, error: userError } = await supabase
+      .from("Users")
+      .select("*")
+      .eq("user_name", name)
+      .eq("password", password)
+      .single();
+
+    if (userError) {
+      throw new Error("Error fetching user data from the users table.");
+    }
+
+    return userData;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+};
+
+const fetchSchedules = async (userId) => {
+  try {
+    let { data: schedulesData, error: schedulesError } = await supabase
+      .from("Schedules")
+      .select("schedule_name, schedule_obj")
+      .eq("user_id", userId);
+
+    if (schedulesError) {
+      throw new Error("Error fetching schedules from the schedules table.");
+    }
+
+    return schedulesData;
+  } catch (error) {
+    console.error("Error fetching schedules:", error);
+    return null;
+  }
+};
+
 const ScheduleComponent = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [userId, setUserId] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
-  const [colorGrid, setColorGrid] = useState([]);
+  const [scheduleData, setScheduleData] = useState(null);
 
   const handleChangeName = (e) => {
     setName(e.target.value);
@@ -25,35 +63,25 @@ const ScheduleComponent = () => {
 
   const handleFetchSchedules = async () => {
     try {
-      let { data: usersData, error: usersError } = await supabase
-        .from("Users")
-        .select("*")
-        .eq("user_name", name)
-        .eq("password", password)
-        .single();
+      const userData = await fetchUserData(name, password);
 
-      if (usersError) {
-        throw new Error("Error fetching user data from the users table.");
-      }
-
-      if (usersData) {
-        const userId = usersData.id;
+      if (userData) {
+        const userId = userData.id;
         setUserId(userId);
 
-        let { data: schedulesData, error: schedulesError } = await supabase
-          .from("Schedules")
-          .select("schedule_name, schedule_obj")
-          .eq("user_id", userId);
-
-        if (schedulesError) {
-          throw new Error("Error fetching schedules from the schedules table.");
-        }
+        const schedulesData = await fetchSchedules(userId);
 
         if (schedulesData) {
           setSchedules(schedulesData);
-          const selectedSchedParsed = JSON.parse(schedulesData[0].schedule_obj);
-          const grid = createEventGrid(selectedSchedParsed);
-          setColorGrid(grid);
+          const schedulesDataWithGrid = schedulesData.map((schedule) => {
+            const scheduleObj = JSON.parse(schedule.schedule_obj);
+            const grid = createEventGrid(scheduleObj);
+            return {
+              ...schedule,
+              grid,
+            };
+          });
+          setScheduleData(schedulesDataWithGrid);
         }
       }
     } catch (error) {
@@ -61,9 +89,17 @@ const ScheduleComponent = () => {
     }
   };
 
-  //DHIA CODE TO DISPLAY SCHEDULE
+  useEffect(() => {
+    if (selectedSchedule) {
+      let grid = createEventGrid(JSON.parse(selectedSchedule.schedule_obj));
+      setSelectedSchedule((prevSchedule) => ({
+        ...prevSchedule,
+        grid,
+      }));
+    }
+  }, [selectedSchedule]);
+
   const daysNum = Array.from({ length: 7 }, (_, i) => i);
-  //change the following two lines Dhiaa
   const days = [
     "Monday",
     "Tuesday",
@@ -74,31 +110,14 @@ const ScheduleComponent = () => {
     "Sunday",
   ];
   const hours = Array.from({ length: 13 }, (_, i) => i);
-  // const temp =
-  //   '[{"name":"aarmin","start":14,"end":18,"day":0},{"name":"one","start":10,"end":11,"day":1}]';
-  // let eventListTest = JSON.parse(temp);
-  // let colorGrid = createEventGrid(eventListTest);
-  // console.log(colorGrid);
 
   const handleSelectSchedule = (e) => {
     const selectedScheduleName = e.target.value;
-    const selectedScheduleObj = schedules.find(
+    const selectedScheduleData = scheduleData.find(
       (schedule) => schedule.schedule_name === selectedScheduleName
-    )?.schedule_obj;
-
-    setSelectedSchedule(selectedScheduleObj);
+    );
+    setSelectedSchedule(selectedScheduleData);
   };
-
-  // Use useEffect to update the colorGrid state when a new schedule is selected
-  useEffect(() => {
-    if (selectedSchedule) {
-      const selectedSchedParsed = JSON.parse(selectedSchedule);
-      const grid = createEventGrid(selectedSchedParsed);
-      setColorGrid(grid);
-    } else {
-      setColorGrid([]);
-    }
-  }, [selectedSchedule]);
 
   return (
     <div>
@@ -142,7 +161,7 @@ const ScheduleComponent = () => {
         <label htmlFor="schedule-dropdown">Select Schedule:</label>
         <select
           id="schedule-dropdown"
-          value={selectedSchedule}
+          value={selectedSchedule ? selectedSchedule.schedule_name : ""}
           onChange={handleSelectSchedule}
         >
           <option value="">Select a schedule</option>
@@ -152,11 +171,9 @@ const ScheduleComponent = () => {
             </option>
           ))}
         </select>
-        {selectedSchedule && (
+        {selectedSchedule ? (
           <div>
-            <h3>Schedule: {selectedSchedule}</h3>
-            {/* Render the schedule_obj here */}
-            {/* ... (You may use the 'selectedSchedule' value to get the corresponding schedule_obj from the state and display it) */}
+            <h3>Schedule: {selectedSchedule.schedule_name}</h3>
             <div className="bigDiv" id="scheduleDiv"></div>
             <div className="row">
               <div className="hours"></div>
@@ -189,15 +206,15 @@ const ScheduleComponent = () => {
                             backgroundColor: isTimeSlotEvent(
                               day,
                               hour + 8,
-                              colorGrid
+                              selectedSchedule.grid
                             ),
                           }}
                         >
                           {firstTimeSlotName(
                             day,
                             hour + 8,
-                            colorGrid,
-                            JSON.parse(selectedSchedule)
+                            selectedSchedule.grid,
+                            JSON.parse(selectedSchedule.schedule_obj)
                           )}
                         </div>
                       ))}
@@ -207,16 +224,10 @@ const ScheduleComponent = () => {
               </div>
             </div>
           </div>
+        ) : (
+          <div>No schedule selected.</div>
         )}
       </div>
-
-      {/* Render the fetched schedules here */}
-
-      {/* <ul>
-        {schedules.map((schedule) => (
-          <li key={schedule.id}>{schedule.title}</li>
-        ))}
-      </ul> */}
     </div>
   );
 };

@@ -132,9 +132,9 @@ function getItemColor(itemId) {
 export function firstTimeSlotName(day, hour, grid, listOfEvents) {
   let currID = grid[day][hour - 8];
   if (currID != 0) {
-    console.log("in the first event thing");
+    // console.log("in the first event thing");
     console.log(listOfEvents);
-    console.log("in the first event thing, end");
+    // console.log("in the first event thing, end");
     if (currID % 2 == 0) {
       // this is the first timeslot
       console.log(currID / 2);
