@@ -52,6 +52,7 @@ const ScheduleComponent = () => {
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [scheduleData, setScheduleData] = useState(null);
+  const [schedulesFetched, setSchedulesFetched] = useState(false); // New state for tracking schedule fetch
 
   const handleChangeName = (e) => {
     setName(e.target.value);
@@ -82,6 +83,7 @@ const ScheduleComponent = () => {
             };
           });
           setScheduleData(schedulesDataWithGrid);
+          setSchedulesFetched(true); // Set schedulesFetched to true after schedules are fetched
         }
       }
     } catch (error) {
@@ -157,77 +159,82 @@ const ScheduleComponent = () => {
           Fetch Schedules
         </button>
       </div>
-      <div>
-        <label htmlFor="schedule-dropdown">Select Schedule:</label>
-        <select
-          id="schedule-dropdown"
-          value={selectedSchedule ? selectedSchedule.schedule_name : ""}
-          onChange={handleSelectSchedule}
-        >
-          <option value="">Select a schedule</option>
-          {schedules.map((schedule) => (
-            <option key={schedule.schedule_name} value={schedule.schedule_name}>
-              {schedule.schedule_name}
-            </option>
-          ))}
-        </select>
-        {selectedSchedule ? (
-          <div>
-            <h3>Schedule: {selectedSchedule.schedule_name}</h3>
-            <div className="bigDiv" id="scheduleDiv"></div>
-            <div className="row">
-              <div className="hours"></div>
-              <div className="weekdays">
-                {days.map((day) => (
-                  <div key={day} className="day">
-                    {day}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="row">
-              <div className="hours">
-                {hours.map((hour) => (
-                  <div key={hour} className="hour">
-                    {hour + 8}:00
-                  </div>
-                ))}
-              </div>
-              <div className="week-schedule">
-                <div className="schedule">
-                  {daysNum.map((day) => (
-                    <div key={day} className="day-schedule">
-                      {hours.map((hour) => (
-                        <div
-                          id={`${day}-${hour + 8}`}
-                          key={`${day}-${hour + 8}`}
-                          className="hour-slot"
-                          style={{
-                            backgroundColor: isTimeSlotEvent(
-                              day,
-                              hour + 8,
-                              selectedSchedule.grid
-                            ),
-                          }}
-                        >
-                          {firstTimeSlotName(
-                            day,
-                            hour + 8,
-                            selectedSchedule.grid,
-                            JSON.parse(selectedSchedule.schedule_obj)
-                          )}
-                        </div>
-                      ))}
+      {schedulesFetched && ( // Render the dropdown only if schedules are fetched
+        <div>
+          <label htmlFor="schedule-dropdown">Select Schedule:</label>
+          <select
+            id="schedule-dropdown"
+            value={selectedSchedule ? selectedSchedule.schedule_name : ""}
+            onChange={handleSelectSchedule}
+          >
+            <option value="">Select a schedule</option>
+            {schedules.map((schedule) => (
+              <option
+                key={schedule.schedule_name}
+                value={schedule.schedule_name}
+              >
+                {schedule.schedule_name}
+              </option>
+            ))}
+          </select>
+          {selectedSchedule ? (
+            <div>
+              <h3>Schedule: {selectedSchedule.schedule_name}</h3>
+              <div className="bigDiv" id="scheduleDiv"></div>
+              <div className="row">
+                <div className="hours"></div>
+                <div className="weekdays">
+                  {days.map((day) => (
+                    <div key={day} className="day">
+                      {day}
                     </div>
                   ))}
                 </div>
               </div>
+              <div className="row">
+                <div className="hours">
+                  {hours.map((hour) => (
+                    <div key={hour} className="hour">
+                      {hour + 8}:00
+                    </div>
+                  ))}
+                </div>
+                <div className="week-schedule">
+                  <div className="schedule">
+                    {daysNum.map((day) => (
+                      <div key={day} className="day-schedule">
+                        {hours.map((hour) => (
+                          <div
+                            id={`${day}-${hour + 8}`}
+                            key={`${day}-${hour + 8}`}
+                            className="hour-slot"
+                            style={{
+                              backgroundColor: isTimeSlotEvent(
+                                day,
+                                hour + 8,
+                                selectedSchedule.grid
+                              ),
+                            }}
+                          >
+                            {firstTimeSlotName(
+                              day,
+                              hour + 8,
+                              selectedSchedule.grid,
+                              JSON.parse(selectedSchedule.schedule_obj)
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div>No schedule selected.</div>
-        )}
-      </div>
+          ) : (
+            <div>No schedule selected.</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
