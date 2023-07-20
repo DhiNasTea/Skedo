@@ -5,6 +5,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #ece9e6; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #ffffff,
+    #ece9e6
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ffffff, #ece9e6);
 }
 
 code {
@@ -19,7 +26,7 @@ code {
 }
 
 .body-container {
-  padding: 0px 64px;
+  padding: 16px 64px;
   background: #ece9e6; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to right,
@@ -100,4 +107,8 @@ code {
 
 .save-form-elem {
   margin-right: 2rem;
+}
+
+.helper-text {
+  margin-top: 1rem;
 }

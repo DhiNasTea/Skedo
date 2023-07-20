@@ -12,7 +12,7 @@ function App() {
       </nav>
       <div className="Toastify"></div>
       <div className="body-container mt-5">
-        <h1 className="h2 pt-2 pb-3 heading">Personal Scheduler</h1>
+        <h2 className="h3 pt-2 pb-3 heading">Personal Scheduler</h2>
 
         <Tabs />
       </div>

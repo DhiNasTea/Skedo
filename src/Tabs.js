@@ -11,6 +11,10 @@ const Tabs = () => {
   const [schedAndEventsList, setSchedAndEventsList] = useState(null);
 
   const handleTabClick = (tab) => {
+    if (tab === "schedules" && !schedAndEventsList) {
+      return; // Prevent the Schedules tab from being active if schedAndEventsList is not set
+    }
+
     setActiveTab(tab);
   };
 
@@ -25,6 +29,7 @@ const Tabs = () => {
     setSchedAndEventsList(schedList);
     setActiveTab("schedules");
   };
+
   return (
     <div className="container">
       <nav className="nav nav-tabs">
@@ -68,7 +73,9 @@ const Tabs = () => {
           className={
             activeTab === "schedules"
               ? "active nav-item nav-link"
-              : "nav-item nav-link"
+              : schedAndEventsList
+              ? "nav-item nav-link"
+              : "nav-item nav-link disabled" // Add 'disabled' class to disable the tab visually
           }
           onClick={() => handleTabClick("schedules")}
           data-toggle="tab"
