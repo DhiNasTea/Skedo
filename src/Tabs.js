@@ -9,6 +9,7 @@ const Tabs = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [tasks, setTasks] = useState([]);
   const [schedAndEventsList, setSchedAndEventsList] = useState(null);
+  const [tasksSet, setTasksSet] = useState(false);
 
   const handleTabClick = (tab) => {
     if (tab === "schedules" && !schedAndEventsList) {
@@ -21,6 +22,7 @@ const Tabs = () => {
   // Handles clicking next in the Tasks tab
   const handleNextClick = (tasksArray) => {
     setTasks(tasksArray);
+    setTasksSet(true); // Mark tasks as set
     setActiveTab("options");
   };
 
@@ -61,7 +63,7 @@ const Tabs = () => {
           className={
             activeTab === "options"
               ? "active nav-item nav-link"
-              : tasks.length > 0
+              : tasksSet // Check if tasks are set to enable the tab
               ? "nav-item nav-link"
               : "nav-item nav-link disabled" // Disable the tab visually if tasks are not set
           }
