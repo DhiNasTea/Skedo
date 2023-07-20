@@ -15,9 +15,15 @@ const TasksTab = ({ onHandleNextClick }) => {
   };
 
   const handleAddTask = () => {
+    let croppedVariable = newTask;
+    if (newTask.length > 13)
+    {
+      croppedVariable = newTask.slice(0, 13);
+    }
     if (newTask && newDuration) {
+
       const task = {
-        name: newTask,
+        name: croppedVariable,
         duration: newDuration,
       };
 
