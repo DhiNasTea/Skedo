@@ -16,17 +16,14 @@ const TasksTab = ({ onHandleNextClick }) => {
 
   const handleAddTask = () => {
     let croppedVariable = newTask;
-    if (newTask.length > 13)
-    {
+    if (newTask.length > 13) {
       croppedVariable = newTask.slice(0, 13);
     }
     if (newTask && newDuration) {
-
       const task = {
         name: croppedVariable,
         duration: newDuration,
       };
-
       setTasks([...tasks, task]);
       setNewTask("");
       setNewDuration("");
@@ -44,6 +41,39 @@ const TasksTab = ({ onHandleNextClick }) => {
     console.log("Next button clicked");
   };
 
+  // Style objects for the elements
+  const inputStyle = {
+    padding: "8px",
+    marginRight: "10px",
+    border: "1px solid #ccc",
+  };
+
+  const selectStyle = {
+    padding: "8px",
+    marginRight: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+  };
+
+  const addButtonStyle = {
+    padding: "8px 16px",
+    background: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  };
+
+  const nextButtonStyle = {
+    padding: "10px 20px",
+    background: "#28a745",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    marginTop: "20px",
+  };
+
   return (
     <div>
       <h2>Tasks</h2>
@@ -53,8 +83,13 @@ const TasksTab = ({ onHandleNextClick }) => {
           placeholder="Task name"
           value={newTask}
           onChange={handleTaskChange}
+          style={inputStyle}
         />
-        <select value={newDuration} onChange={handleDurationChange}>
+        <select
+          value={newDuration}
+          onChange={handleDurationChange}
+          style={selectStyle}
+        >
           <option value="">Select duration</option>
           <option value="1">1 hour</option>
           <option value="2">2 hours</option>
@@ -63,11 +98,13 @@ const TasksTab = ({ onHandleNextClick }) => {
           <option value="5">5 hours</option>
           {/* Add more duration options as needed */}
         </select>
-        <button onClick={handleAddTask}>Add Task</button>
+        <button onClick={handleAddTask} style={addButtonStyle}>
+          Add Task
+        </button>
       </div>
       <div>
         {tasks.map((task, index) => (
-          <div key={index}>
+          <div key={index} style={{ margin: "5px 0" }}>
             <span>{task.name}</span> -{" "}
             <span>
               {task.duration} {task.duration === "1" ? "hour" : "hours"}
@@ -75,7 +112,9 @@ const TasksTab = ({ onHandleNextClick }) => {
           </div>
         ))}
       </div>
-      <button onClick={handleNext}>Next</button>
+      <button onClick={handleNext} style={nextButtonStyle}>
+        Next
+      </button>
     </div>
   );
 };
