@@ -20,6 +20,13 @@ code {
 
 .body-container {
   padding: 0px 64px;
+  background: #ece9e6; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #ffffff,
+    #ece9e6
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ffffff, #ece9e6);
 }
 .container {
   padding-left: 0;
@@ -73,7 +80,7 @@ code {
   appearance: none;
 }
 
-.fetch-sched-button {
+.custom-button {
   display: inline-block;
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 0.375rem 0.375rem 0.375rem;
@@ -84,4 +91,13 @@ code {
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
   appearance: none;
+}
+
+.save-btn {
+  margin-top: 1rem;
+  float: right;
+}
+
+.save-form-elem {
+  margin-right: 2rem;
 }

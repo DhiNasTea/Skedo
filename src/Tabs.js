@@ -3,9 +3,10 @@ import Options from "./Options";
 import Schedules from "./Schedules";
 import SavedSchedules from "./SavedSchedules";
 import Tasks from "./Tasks";
+import Home from "./Home";
 
 const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("tasks");
+  const [activeTab, setActiveTab] = useState("home");
   const [tasks, setTasks] = useState([]);
   const [schedAndEventsList, setSchedAndEventsList] = useState(null);
 
@@ -27,6 +28,18 @@ const Tabs = () => {
   return (
     <div className="container">
       <nav className="nav nav-tabs">
+        <a
+          className={
+            activeTab === "home"
+              ? "active nav-item nav-link"
+              : "nav-item nav-link"
+          }
+          onClick={() => handleTabClick("home")}
+          href="#home"
+          data-toggle="tab"
+        >
+          Home
+        </a>
         <a
           className={
             activeTab === "tasks"
@@ -77,6 +90,7 @@ const Tabs = () => {
         </a>
       </nav>
       <div className="tab-content">
+        {activeTab === "home" && <Home />}
         {activeTab === "tasks" && <Tasks onHandleNextClick={handleNextClick} />}
         {activeTab === "options" && (
           <Options
@@ -85,7 +99,10 @@ const Tabs = () => {
           />
         )}
         {activeTab === "schedules" && (
-          <Schedules schedAndEventsList={schedAndEventsList} />
+          <Schedules
+            className="schedules-tab"
+            schedAndEventsList={schedAndEventsList}
+          />
         )}
         {activeTab === "saved_schedules" && <SavedSchedules />}
       </div>
