@@ -1,14 +1,10 @@
 # Skedo Scheduling app
 
 Project designed by:
--Christian Gibbs
--Dhiaa Naas
--Karim Shakil
--Miten Soni
-
-for CSI 3140
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Christian Gibbs,
+Dhiaa Naas,
+Karim Shakil,
+Miten Soni.
 
 To run the app, first install the required dependencies by running:
 
