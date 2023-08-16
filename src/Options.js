@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { WeekDay, Filter, Task, scheduleTasks } from "./Scheduling";
+import { Popup } from "./Popup";
 
 const generateTimeOptions = () => {
   const options = [];
@@ -19,6 +20,8 @@ const Options = ({ tasksArray, onHandleNextClick }) => {
     Saturday: { checked: false, startTime: "", endTime: "" },
     Sunday: { checked: false, startTime: "", endTime: "" },
   });
+
+  const [popUpOpened, setOpen] = useState(false);
 
   const anyCheckboxSelected = () => {
     return Object.values(schedule).some(
@@ -56,95 +59,115 @@ const Options = ({ tasksArray, onHandleNextClick }) => {
     });
   };
 
-  const handleSubmit = (event) => {
+  let handleSubmit = (event) => {
+    console.log("Here are the tasks before generation: ");
+    console.log(tasksArray);
     event.preventDefault();
-    console.log("This is waht user submitted Schedule:");
-    console.log(schedule);
-    //Add your submission logic here, e.g., send data to the server, etc.
-    let filterObject = createFilterObject(schedule);
-    console.log(filterObject);
+    // console.log("This is what the user submitted as availabilities:");
+    // console.log(schedule);
 
+    let filterObject = createFilterObject(schedule);
+
+    // console.log("This is the corresponding filter object, based on user input")
+    // console.log(filterObject);
+
+    
     let schedAndEventsList = generateSchedule(tasksArray, filterObject);
+
+    if (!schedAndEventsList) {
+      // The algorithm did not find a schedule that fits all tasks, log it to user
+      setOpen(true);
+      return;
+    }
+
     // Call the callback function to pass the schedAndEventsList to the Tabs component
     onHandleNextClick(schedAndEventsList);
   };
 
   const timeOptions = generateTimeOptions();
+  const popUpText = "The scheduling algorithm did not" +
+                    " find a schedule containing all of your tasks." + 
+                    " The algorithm is still not optimal, and there could exist" +
+                    " a schedule for this input. For now however, please give it more/" +
+                    "different availabilities!";
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h4 className="h4">Filters</h4>
-      <p>Select the days and times you want to work:</p>
-      {Object.entries(schedule).map(
-        ([day, { checked, startTime, endTime }]) => (
-          <div key={day} className="form-check mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={checked}
-              onChange={handleCheckboxChange(day)}
-              id={`${day}-checkbox`}
-            />
-            <label className="form-check-label" htmlFor={`${day}-checkbox`}>
-              {day}
-            </label>
-            {checked && (
-              <div className="form-row">
-                <div className="col-md-4">
-                  <div className="mb-3 input-group">
-                    <label className="input-group-text form-label">
-                      Start Time:
-                    </label>
-                    <select
-                      className="custom-select"
-                      value={startTime}
-                      onChange={handleStartTimeChange(day)}
-                    >
-                      <option value="">Select start time</option>
-                      {timeOptions.map((time) => (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
+    <div>
+      
+      {popUpOpened ? <Popup text={popUpText} closePopup={() => setOpen(false)} /> : null}
+      <form onSubmit={handleSubmit}>
+        <h4 className="h4">Filters</h4>
+        <p>Select the days and times you want to work:</p>
+        {Object.entries(schedule).map(
+          ([day, { checked, startTime, endTime }]) => (
+            <div key={day} className="form-check mb-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                checked={checked}
+                onChange={handleCheckboxChange(day)}
+                id={`${day}-checkbox`}
+              />
+              <label className="form-check-label" htmlFor={`${day}-checkbox`}>
+                {day}
+              </label>
+              {checked && (
+                <div className="form-row">
+                  <div className="col-md-4">
+                    <div className="mb-3 input-group">
+                      <label className="input-group-text form-label">
+                        Start Time:
+                      </label>
+                      <select
+                        className="custom-select"
+                        value={startTime}
+                        onChange={handleStartTimeChange(day)}
+                      >
+                        <option value="">Select start time</option>
+                        {timeOptions.map((time) => (
+                          <option key={time} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3 input-group">
+                      <label className="input-group-text form-label">
+                        End Time:
+                      </label>
+                      <select
+                        className="custom-select"
+                        value={endTime}
+                        onChange={handleEndTimeChange(day)}
+                      >
+                        <option value="">Select end time</option>
+                        {timeOptions.map((time) => (
+                          <option key={time} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <div className="mb-3 input-group">
-                    <label className="input-group-text form-label">
-                      End Time:
-                    </label>
-                    <select
-                      className="custom-select"
-                      value={endTime}
-                      onChange={handleEndTimeChange(day)}
-                    >
-                      <option value="">Select end time</option>
-                      {timeOptions.map((time) => (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )
-      )}
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={!anyCheckboxSelected()}
-      >
-        Go to Schedules
-      </button>
-    </form>
+              )}
+            </div>
+          )
+        )}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={!anyCheckboxSelected()}
+        >
+          Go to Schedules
+        </button>
+      </form>
+    </div>
+
   );
 };
-
-//uncomment after the implementation for Schedule.js is merged
 
 const createFilterObject = (options) => {
   const days = Object.keys(options);
@@ -198,21 +221,22 @@ const createFilterObject = (options) => {
   return preferences;
 };
 
-function runner(filter) {
-  var taskArray = [new Task("smallest task", 3)];
+// function runner(filter) {
+//   var taskArray = [new Task("smallest task", 3)];
 
-  const test = scheduleTasks(taskArray, filter);
-  console.log(test.listOfEvents);
-  console.log(test.schedule);
-  // updateSchedules(test.listOfEvents);
-}
+//   const test = scheduleTasks(taskArray, filter);
+//   console.log(test.listOfEvents);
+//   console.log(test.schedule);
+//   // updateSchedules(test.listOfEvents);
+// }
 function generateSchedule(tasks, filter) {
-  console.log("before generating schedules");
-  console.log(tasks);
-  console.log(filter);
-  const schedAndEventsList = scheduleTasks(tasks, filter);
-  console.log(schedAndEventsList.listOfEvents);
-  console.log(schedAndEventsList.schedule);
+  // console.log("before generating schedules");
+  // console.log(tasks);
+  // console.log(filter);
+  let tasksCopy = JSON.parse(JSON.stringify(tasks));
+  const schedAndEventsList = scheduleTasks(tasksCopy, filter);
+  // console.log(schedAndEventsList.listOfEvents);
+  // console.log(schedAndEventsList.schedule);
   return schedAndEventsList;
 }
 

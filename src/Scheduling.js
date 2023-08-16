@@ -160,6 +160,7 @@ function getHighestValue(task, schedule) {
     }
   }
   if (bestVal == 0) {
+    console.log("The task cannot currently fit in the schedule");
     return null;
   }
   return new ScheduleEvent(
@@ -314,6 +315,13 @@ function eventToString(eventInstance) {
 
 // tested (pass for now)
 export function scheduleTasks(listTasks, filters) {
+  if (listTasks.length == 0)
+  {
+    return null;
+  }
+
+  
+
   var schedule = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -340,7 +348,14 @@ export function scheduleTasks(listTasks, filters) {
     // find best place to fit current task
     let eventTimeslot = getHighestValue(currentTask, schedule);
 
-    console.log(currentTask.name);
+    // if the task cannot fit, return null signaling a scheduling issue
+    if (eventTimeslot == null)
+    {
+      return null;
+    }
+    
+
+    // console.log(currentTask.name);
 
     // book schedule with that
     for (let i = eventTimeslot.start; i < eventTimeslot.end; i++) {
@@ -350,7 +365,6 @@ export function scheduleTasks(listTasks, filters) {
 
     // continue
   }
-
   return { schedule, listOfEvents };
 }
 
