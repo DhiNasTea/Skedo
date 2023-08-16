@@ -102,7 +102,7 @@ function isEventValid(event, schedule) {
   }
   for (var j = event.start; j < event.end; j++) {
     // if the time slot is busy (marked with 1), the event is not valid
-    if (schedule[event.day][j - 8] != 0) {
+    if (schedule[event.day][j - 8] !== 0) {
       return false;
     }
   }
@@ -159,7 +159,7 @@ function getHighestValue(task, schedule) {
       }
     }
   }
-  if (bestVal == 0) {
+  if (bestVal === 0) {
     console.log("The task cannot currently fit in the schedule");
     return null;
   }
@@ -177,6 +177,7 @@ function applyFilters(schedule, filters) {
   // 8 <=     start   < 20
   // 8 <     end     <= 20
   var newSchedule = schedule;
+  var j;
   if (filters.monday) {
     // making sure the day is Available, and the start/end are valid entries
     if (
@@ -188,7 +189,7 @@ function applyFilters(schedule, filters) {
       // if we were free from 8 to 10, we would have
       // [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
       // [8, 9,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ]
-      for (var j = filters.monday.start; j < filters.monday.end; j++) {
+      for (j = filters.monday.start; j < filters.monday.end; j++) {
         newSchedule[0][j - 8] = 0;
       }
     }
@@ -200,7 +201,7 @@ function applyFilters(schedule, filters) {
       filters.tuesday.end <= 21 &&
       filters.tuesday.start < filters.tuesday.end
     ) {
-      for (var j = filters.tuesday.start; j < filters.tuesday.end; j++) {
+      for (j = filters.tuesday.start; j < filters.tuesday.end; j++) {
         newSchedule[1][j - 8] = 0;
       }
     }
@@ -212,7 +213,7 @@ function applyFilters(schedule, filters) {
       filters.wednesday.end <= 21 &&
       filters.wednesday.start < filters.wednesday.end
     ) {
-      for (var j = filters.wednesday.start; j < filters.wednesday.end; j++) {
+      for (j = filters.wednesday.start; j < filters.wednesday.end; j++) {
         newSchedule[2][j - 8] = 0;
       }
     }
@@ -224,7 +225,7 @@ function applyFilters(schedule, filters) {
       filters.thursday.end <= 21 &&
       filters.thursday.start < filters.thursday.end
     ) {
-      for (var j = filters.thursday.start; j < filters.thursday.end; j++) {
+      for (j = filters.thursday.start; j < filters.thursday.end; j++) {
         newSchedule[3][j - 8] = 0;
       }
     }
@@ -236,7 +237,7 @@ function applyFilters(schedule, filters) {
       filters.friday.end <= 21 &&
       filters.friday.start < filters.friday.end
     ) {
-      for (var j = filters.friday.start; j < filters.friday.end; j++) {
+      for (j = filters.friday.start; j < filters.friday.end; j++) {
         newSchedule[4][j - 8] = 0;
       }
     }
@@ -248,7 +249,7 @@ function applyFilters(schedule, filters) {
       filters.saturday.end <= 21 &&
       filters.saturday.start < filters.saturday.end
     ) {
-      for (var j = filters.saturday.start; j < filters.saturday.end; j++) {
+      for (j = filters.saturday.start; j < filters.saturday.end; j++) {
         newSchedule[5][j - 8] = 0;
       }
     }
@@ -260,7 +261,7 @@ function applyFilters(schedule, filters) {
       filters.sunday.end <= 21 &&
       filters.sunday.start < filters.sunday.end
     ) {
-      for (var j = filters.sunday.start; j < filters.sunday.end; j++) {
+      for (j = filters.sunday.start; j < filters.sunday.end; j++) {
         newSchedule[6][j - 8] = 0;
       }
     }
@@ -275,7 +276,7 @@ function showSchedule(schedule) {
     var currRow = "[";
 
     for (var y = 0; y < schedule[x].length; y++) {
-      y != 0 ? (currRow += ", " + schedule[x][y]) : (currRow += schedule[x][y]);
+      y !== 0 ? (currRow += ", " + schedule[x][y]) : (currRow += schedule[x][y]);
     }
 
     currRow += "]";
@@ -294,17 +295,17 @@ function eventToString(eventInstance) {
     " and end: " +
     eventInstance.end +
     " on ";
-  if (eventInstance.day == 0) {
+  if (eventInstance.day === 0) {
     buf += "Monday";
-  } else if (eventInstance.day == 1) {
+  } else if (eventInstance.day === 1) {
     buf += "Tuesday";
-  } else if (eventInstance.day == 2) {
+  } else if (eventInstance.day === 2) {
     buf += "Wednesday";
-  } else if (eventInstance.day == 3) {
+  } else if (eventInstance.day === 3) {
     buf += "Thursday";
-  } else if (eventInstance.day == 4) {
+  } else if (eventInstance.day === 4) {
     buf += "Friday";
-  } else if (eventInstance.day == 5) {
+  } else if (eventInstance.day === 5) {
     buf += "Saturday";
   } else {
     buf += "Sunday";
@@ -315,7 +316,7 @@ function eventToString(eventInstance) {
 
 // tested (pass for now)
 export function scheduleTasks(listTasks, filters) {
-  if (listTasks.length == 0)
+  if (listTasks.length === 0)
   {
     return null;
   }
@@ -341,7 +342,7 @@ export function scheduleTasks(listTasks, filters) {
 
   var orderedTasks = sortTasks(listTasks);
 
-  while (orderedTasks.length != 0) {
+  while (orderedTasks.length !== 0) {
     // pop current task from the list of remaining tasks
     let currentTask = orderedTasks.pop();
 
@@ -349,7 +350,7 @@ export function scheduleTasks(listTasks, filters) {
     let eventTimeslot = getHighestValue(currentTask, schedule);
 
     // if the task cannot fit, return null signaling a scheduling issue
-    if (eventTimeslot == null)
+    if (eventTimeslot === null)
     {
       return null;
     }
@@ -389,7 +390,7 @@ function testSortTasks() {
   console.log("\nSorting test:");
   console.log(
     "\tThe test was " +
-      (sortedArray[0].duration == 3 && sortedArray[4].duration
+      (sortedArray[0].duration === 3 && sortedArray[4].duration
         ? "succesful"
         : "unsuccesful")
   );
@@ -459,17 +460,17 @@ function testValidEvents() {
   );
 
   var eventResults = [
-    [isEventValid(nonValidEvent1, schedule1) == false, nonValidEvent1],
-    [isEventValid(nonValidEvent2, schedule1) == false, nonValidEvent2],
-    [isEventValid(nonValidEvent3, schedule1) == false, nonValidEvent3],
-    [isEventValid(nonValidEvent4, schedule1) == false, nonValidEvent4],
-    [isEventValid(nonValidEvent5, schedule1) == false, nonValidEvent5],
-    [isEventValid(nonValidEvent6, schedule1) == false, nonValidEvent6],
-    [isEventValid(validEvent1, schedule1) == true, validEvent1],
-    [isEventValid(validEvent2, schedule1) == true, validEvent2],
-    [isEventValid(validEvent3, schedule1) == true, validEvent3],
-    [isEventValid(validEvent4, schedule1) == true, validEvent4],
-    [isEventValid(validEvent5, schedule1) == true, validEvent5],
+    [isEventValid(nonValidEvent1, schedule1) === false, nonValidEvent1],
+    [isEventValid(nonValidEvent2, schedule1) === false, nonValidEvent2],
+    [isEventValid(nonValidEvent3, schedule1) === false, nonValidEvent3],
+    [isEventValid(nonValidEvent4, schedule1) === false, nonValidEvent4],
+    [isEventValid(nonValidEvent5, schedule1) === false, nonValidEvent5],
+    [isEventValid(nonValidEvent6, schedule1) === false, nonValidEvent6],
+    [isEventValid(validEvent1, schedule1) === true, validEvent1],
+    [isEventValid(validEvent2, schedule1) === true, validEvent2],
+    [isEventValid(validEvent3, schedule1) === true, validEvent3],
+    [isEventValid(validEvent4, schedule1) === true, validEvent4],
+    [isEventValid(validEvent5, schedule1) === true, validEvent5],
   ];
 
   var validEventsTestSuccessful =
@@ -519,12 +520,12 @@ function testValueEvents() {
   ];
 
   var valuationResults = [
-    [getEventValuation(event1, schedule2) == 32, event1],
-    [getEventValuation(event2, schedule2) == 22, event2],
-    [getEventValuation(event3, schedule2) == 15, event3],
-    [getEventValuation(event4, schedule2) == 0, event4],
-    [getEventValuation(event5, schedule2) == 0, event5],
-    [getEventValuation(event6, schedule2) == 52, event6],
+    [getEventValuation(event1, schedule2) === 32, event1],
+    [getEventValuation(event2, schedule2) === 22, event2],
+    [getEventValuation(event3, schedule2) === 15, event3],
+    [getEventValuation(event4, schedule2) === 0, event4],
+    [getEventValuation(event5, schedule2) === 0, event5],
+    [getEventValuation(event6, schedule2) === 52, event6],
   ];
 
   var valueEventsTestSuccessful =
@@ -586,11 +587,11 @@ function testHighestValue() {
   var result5 = getHighestValue(task3, schedule4);
 
   var highestValueResults = [
-    [result1.day == 4 && result1.start == 9 && result1.end == 11, result1], // Tuesday (2) as the best from 9 to 11
-    [result2.day == 5 && result2.start == 14 && result2.end == 16, result2], // Saturday (5) as the best from 14 to 16
-    [result3.day == 5 && result3.start == 15 && result3.end == 19, result3], // Saturday  (5) as the best from 15 to 18
-    [result4 == null, result4], // no spot available
-    [result5.day == 6 && result5.start == 18 && result5.end == 21, result5], // should be Sunday from 18 to 21
+    [result1.day === 4 && result1.start === 9 && result1.end === 11, result1], // Tuesday (2) as the best from 9 to 11
+    [result2.day === 5 && result2.start === 14 && result2.end === 16, result2], // Saturday (5) as the best from 14 to 16
+    [result3.day === 5 && result3.start === 15 && result3.end === 19, result3], // Saturday  (5) as the best from 15 to 18
+    [result4 === null, result4], // no spot available
+    [result5.day === 6 && result5.start === 18 && result5.end === 21, result5], // should be Sunday from 18 to 21
   ];
 
   var highestValueTestSuccessful =
@@ -645,10 +646,10 @@ function testApplyFilters() {
   ];
 
   var fullday = new WeekDay(8, 21, true);
-  var midday = new WeekDay(10, 14, true);
+  // var midday = new WeekDay(10, 14, true);
   var afternoon = new WeekDay(12, 17, true);
   var morning = new WeekDay(8, 12, true);
-  var night = new WeekDay(18, 21, true);
+  // var night = new WeekDay(18, 21, true);
   var busy = new WeekDay(8, 21, false);
 
   var Filter1 = new Filter(
@@ -703,9 +704,9 @@ function testScheduleTasks() {
 
   var fullday = new WeekDay(8, 21, true);
   var nineToFive = new WeekDay(9, 18, true);
-  var afternoon = new WeekDay(12, 17, true);
+  // var afternoon = new WeekDay(12, 17, true);
   var morning = new WeekDay(8, 12, true);
-  var night = new WeekDay(18, 21, true);
+  // var night = new WeekDay(18, 21, true);
   var busy = new WeekDay(8, 21, false);
 
   var Filter1 = new Filter(
@@ -781,4 +782,4 @@ function testStuff() {
   testScheduleTasks();
 }
 
-// testStuff();
+testStuff();

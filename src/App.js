@@ -5,7 +5,7 @@ function App() {
     <div className="App">
       <nav className="navbar navbar-expand-lg bg-green fixed-top">
         <div className="px-sm-3 container">
-          <a href="#" className="navbar-brand">
+          <a href="/#" className="navbar-brand">
             <span className="site-title">Skedo</span>
           </a>
         </div>

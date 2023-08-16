@@ -1,45 +1,43 @@
-import { element } from "prop-types";
 import "./Schedules.css";
 import "./index.css";
-import { ScheduleEvent } from "./Scheduling";
 import React, { useState } from "react";
 import supabase from "./supabase";
 
-function updateSchedules(listOfEvents) {
-  console.log("coloring was called");
+// function updateSchedules(listOfEvents) {
+//   console.log("coloring was called");
 
-  for (var j = 0; j < listOfEvents.length; j++) {
-    let scheduleEvent = listOfEvents[j];
+//   for (var j = 0; j < listOfEvents.length; j++) {
+//     let scheduleEvent = listOfEvents[j];
 
-    let start = scheduleEvent.start;
-    let end = scheduleEvent.end;
-    let day = scheduleEvent.day;
-    let name = scheduleEvent.name;
+//     let start = scheduleEvent.start;
+//     let end = scheduleEvent.end;
+//     let day = scheduleEvent.day;
+//     // let name = scheduleEvent.name;
 
-    for (let i = start; i < end; i++) {
-      console.log("day: " + day + ", i: " + i);
-      let currTimeSlot = document.getElementById(`${day}-${i}`);
-      if (currTimeSlot) currTimeSlot.style.backgroundColor = "red";
-    }
-  }
-}
+//     for (let i = start; i < end; i++) {
+//       console.log("day: " + day + ", i: " + i);
+//       let currTimeSlot = document.getElementById(`${day}-${i}`);
+//       if (currTimeSlot) currTimeSlot.style.backgroundColor = "red";
+//     }
+//   }
+// }
 
-function testUpdateSchedules() {
-  var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
-  var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
-  var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
-  var event4 = new ScheduleEvent(
-    "value should be equal to 0, invalid",
-    7,
-    12,
-    2
-  );
-  var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
+// function testUpdateSchedules() {
+//   var event1 = new ScheduleEvent("value should be equal to 32", 9, 12, 0);
+//   var event2 = new ScheduleEvent("value should be equal to 22", 14, 16, 3);
+//   var event3 = new ScheduleEvent("value should be equal to 15", 18, 21, 4);
+//   var event4 = new ScheduleEvent(
+//     "value should be equal to 0, invalid",
+//     7,
+//     12,
+//     2
+//   );
+//   var event5 = new ScheduleEvent("value should be equal to 0", 14, 14, 4);
 
-  var eventList = [event1, event2, event3, event4, event5];
+//   var eventList = [event1, event2, event3, event4, event5];
 
-  updateSchedules(eventList);
-}
+//   updateSchedules(eventList);
+// }
 
 export function createEventGrid(listOfEvents) {
   let grid = Array(7);
@@ -57,7 +55,7 @@ export function createEventGrid(listOfEvents) {
     let start = scheduleEvent.start;
     let end = scheduleEvent.end;
     let day = scheduleEvent.day;
-    let name = scheduleEvent.name;
+    // let name = scheduleEvent.name;
     let firstTimeSlot = true;
 
     for (let i = start; i < end; i++) {
@@ -78,8 +76,8 @@ export function createEventGrid(listOfEvents) {
 export function isTimeSlotEvent(day, hour, grid) {
   // will return a color
   let currID = grid[day][hour - 8];
-  if (currID != 0) {
-    if (currID % 2 == 0) {
+  if (currID !== 0) {
+    if (currID % 2 === 0) {
       // this is the first timeslot
       return getItemColor(grid[day][hour - 8] / 2);
     } else {
@@ -131,11 +129,11 @@ function getItemColor(itemId) {
 
 export function firstTimeSlotName(day, hour, grid, listOfEvents) {
   let currID = grid[day][hour - 8];
-  if (currID != 0) {
+  if (currID !== 0) {
     // console.log("in the first event thing");
     console.log(listOfEvents);
     // console.log("in the first event thing, end");
-    if (currID % 2 == 0) {
+    if (currID % 2 === 0) {
       // this is the first timeslot
       console.log(currID / 2);
       return listOfEvents[currID / 2 - 1].name;
@@ -208,9 +206,9 @@ function Schedules({ schedAndEventsList }) {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-
+      /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "[iI]gnored" }]*/
       // Now, insert the schedule data into the schedules table
-      const { data: scheduleData, error: scheduleError } = await supabase
+      const { data: scheduleDataIgnored, error: scheduleError } = await supabase
         .from("Schedules")
         .insert([
           {

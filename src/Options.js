@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { WeekDay, Filter, Task, scheduleTasks } from "./Scheduling";
+import { WeekDay, Filter, scheduleTasks } from "./Scheduling";
 import { Popup } from "./Popup";
 
 const generateTimeOptions = () => {
@@ -170,7 +170,6 @@ const Options = ({ tasksArray, onHandleNextClick }) => {
 };
 
 const createFilterObject = (options) => {
-  const days = Object.keys(options);
 
   var monday = new WeekDay(
     parseInt(options.Monday.startTime.split(":")[0], 10),

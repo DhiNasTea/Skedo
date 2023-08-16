@@ -68,8 +68,8 @@ const ScheduleComponent = () => {
       const userData = await fetchUserData(name, password);
 
       if (userData) {
-        const userId = userData.id;
-        setUserId(userId);
+        const userIdExt = userData.id;
+        setUserId(userIdExt);
 
         const schedulesData = await fetchSchedules(userId);
 
